@@ -64,3 +64,16 @@ OK: dummy/src/bfusb.c
 
 #DIFF 
 Порівняння конфігурацій за допомогою diff показало, що між версіями існують відмінності у значеннях окремих параметрів та складі доступних параметрів форматування.
+
+#DIFF after swapping to chromium 17 (AFTER linux .clang-format file)
+
+ task03/dummy/.clang-format      | 1004 ++++------------
+ task03/dummy/include/btbcm.h    |  140 ++-
+ task03/dummy/include/btrtl.h    |  196 ++-
+ task03/dummy/include/hci_uart.h |  141 +--
+ task03/dummy/src/bfusb.c        | 1029 ++++++++--------
+ task03/dummy/src/btbcm.c        | 1276 ++++++++++----------
+ task03/dummy/src/btrtl.c        | 2484 +++++++++++++++++++--------------------
+ task03/dummy/src/hci_aml.c      | 1049 ++++++++---------
+ task03/linux.clang-format       |  808 +++++++++++++
+ 9 files changed, 4120 insertions(+), 4007 deletions(-)
