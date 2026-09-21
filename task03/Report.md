@@ -77,3 +77,20 @@ OK: dummy/src/bfusb.c
  task03/dummy/src/hci_aml.c      | 1049 ++++++++---------
  task03/linux.clang-format       |  808 +++++++++++++
  9 files changed, 4120 insertions(+), 4007 deletions(-)
+
+#DIFF after swapping from chromium 17 to chromium 21
+
+ task03/dummy/.clang-format      | 1004 ++++------------
+ task03/dummy/include/btbcm.h    |  140 ++-
+ task03/dummy/include/btrtl.h    |  196 ++-
+ task03/dummy/include/hci_uart.h |  141 +--
+ task03/dummy/src/bfusb.c        | 1029 ++++++++--------
+ task03/dummy/src/btbcm.c        | 1276 ++++++++++----------
+ task03/dummy/src/btrtl.c        | 2484 +++++++++++++++++++--------------------
+ task03/dummy/src/hci_aml.c      | 1049 ++++++++---------
+ task03/linux.clang-format       |  808 +++++++++++++
+ 9 files changed, 4120 insertions(+), 4007 deletions(-)
+
+#
+Експеримент показав, що різні версії clang-format можуть давати різний результат форматування навіть при використанні одного стилю Chromium.
+Таким чином, на кінцевий результат форматування впливають як конфігурація стилю, так і версія clang-format.
