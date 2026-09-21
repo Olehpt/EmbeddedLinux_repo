@@ -1,4 +1,4 @@
-#
+#!/bin/bash
 echo "This script is about to format files form  chosen catalog by clang-format-21"
 if [ $# != 1 ]; then
         echo "Error: script uses only 1 argument."

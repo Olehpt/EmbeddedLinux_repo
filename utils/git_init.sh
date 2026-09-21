@@ -1,4 +1,4 @@
-#
+#!/bin/bash
 if (($# == 0)); then
 	echo "This is script for creating git & github repo"
 	exit 0
@@ -66,8 +66,6 @@ git config --local user.email "$MAIL"
 git config --local init.defaultBranch "$BRANCH"
 touch .gitignore
 echo "# $CATALOG_NAME" >> README.md
-git add .
-git commit -m "Initial commit"
 
 if (( $# == 1)); then
 	echo "Script is done"
