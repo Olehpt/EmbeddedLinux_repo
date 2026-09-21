@@ -53,15 +53,15 @@ struct rtl_vendor_config {
 } __packed;
 
 struct rtl_epatch_header_v2 {
-	__u8   signature[8];
-	__u8   fw_version[8];
+	__u8 signature[8];
+	__u8 fw_version[8];
 	__le32 num_sections;
 } __packed;
 
 struct rtl_section {
 	__le32 opcode;
 	__le32 len;
-	u8     data[];
+	u8 data[];
 } __packed;
 
 struct rtl_section_hdr {
@@ -70,20 +70,20 @@ struct rtl_section_hdr {
 } __packed;
 
 struct rtl_common_subsec {
-	__u8   eco;
-	__u8   prio;
-	__u8   cb[2];
+	__u8 eco;
+	__u8 prio;
+	__u8 cb[2];
 	__le32 len;
-	__u8   data[];
+	__u8 data[];
 };
 
 struct rtl_sec_hdr {
-	__u8   eco;
-	__u8   prio;
-	__u8   key_id;
-	__u8   reserved;
+	__u8 eco;
+	__u8 prio;
+	__u8 key_id;
+	__u8 reserved;
 	__le32 len;
-	__u8   data[];
+	__u8 data[];
 } __packed;
 
 struct rtl_subsection {
@@ -95,7 +95,7 @@ struct rtl_subsection {
 };
 
 struct rtl_iovec {
-	u8  *data;
+	u8 *data;
 	u32 len;
 };
 
@@ -112,7 +112,7 @@ enum {
 struct rtl_dump_info {
 	const char *driver_name;
 	char *controller;
-	u32  fw_version;
+	u32 fw_version;
 };
 
 struct btrealtek_data {
@@ -121,16 +121,16 @@ struct btrealtek_data {
 	struct rtl_dump_info rtl_dump;
 };
 
-#define btrealtek_set_flag(hdev, nr)					\
-	do {								\
-		struct btrealtek_data *realtek = hci_get_priv((hdev));	\
-		set_bit((nr), realtek->flags);				\
+#define btrealtek_set_flag(hdev, nr)                                   \
+	do {                                                           \
+		struct btrealtek_data *realtek = hci_get_priv((hdev)); \
+		set_bit((nr), realtek->flags);                         \
 	} while (0)
 
-#define btrealtek_get_flag(hdev)					\
+#define btrealtek_get_flag(hdev) \
 	(((struct btrealtek_data *)hci_get_priv(hdev))->flags)
 
-#define btrealtek_test_flag(hdev, nr)	test_bit((nr), btrealtek_get_flag(hdev))
+#define btrealtek_test_flag(hdev, nr) test_bit((nr), btrealtek_get_flag(hdev))
 
 #if IS_ENABLED(CONFIG_BT_RTL)
 
@@ -191,7 +191,8 @@ static inline int btrtl_get_uart_settings(struct hci_dev *hdev,
 	return -ENOENT;
 }
 
-static inline void btrtl_set_driver_name(struct hci_dev *hdev, const char *driver_name)
+static inline void btrtl_set_driver_name(struct hci_dev *hdev,
+					 const char *driver_name)
 {
 }
 

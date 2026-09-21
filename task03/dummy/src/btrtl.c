@@ -17,44 +17,45 @@
 
 #define VERSION "0.1"
 
-#define RTL_CHIP_8723CS_CG	3
-#define RTL_CHIP_8723CS_VF	4
-#define RTL_CHIP_8723CS_XX	5
-#define RTL_EPATCH_SIGNATURE	"Realtech"
-#define RTL_EPATCH_SIGNATURE_V2	"RTBTCore"
-#define RTL_ROM_LMP_8703B	0x8703
-#define RTL_ROM_LMP_8723A	0x1200
-#define RTL_ROM_LMP_8723B	0x8723
-#define RTL_ROM_LMP_8821A	0x8821
-#define RTL_ROM_LMP_8761A	0x8761
-#define RTL_ROM_LMP_8822B	0x8822
-#define RTL_ROM_LMP_8852A	0x8852
-#define RTL_ROM_LMP_8851B	0x8851
-#define RTL_ROM_LMP_8922A	0x8922
-#define RTL_CONFIG_MAGIC	0x8723ab55
+#define RTL_CHIP_8723CS_CG 3
+#define RTL_CHIP_8723CS_VF 4
+#define RTL_CHIP_8723CS_XX 5
+#define RTL_EPATCH_SIGNATURE "Realtech"
+#define RTL_EPATCH_SIGNATURE_V2 "RTBTCore"
+#define RTL_ROM_LMP_8703B 0x8703
+#define RTL_ROM_LMP_8723A 0x1200
+#define RTL_ROM_LMP_8723B 0x8723
+#define RTL_ROM_LMP_8821A 0x8821
+#define RTL_ROM_LMP_8761A 0x8761
+#define RTL_ROM_LMP_8822B 0x8822
+#define RTL_ROM_LMP_8852A 0x8852
+#define RTL_ROM_LMP_8851B 0x8851
+#define RTL_ROM_LMP_8922A 0x8922
+#define RTL_CONFIG_MAGIC 0x8723ab55
 
-#define RTL_VSC_OP_COREDUMP	0xfcff
+#define RTL_VSC_OP_COREDUMP 0xfcff
 
-#define IC_MATCH_FL_LMPSUBV	(1 << 0)
-#define IC_MATCH_FL_HCIREV	(1 << 1)
-#define IC_MATCH_FL_HCIVER	(1 << 2)
-#define IC_MATCH_FL_HCIBUS	(1 << 3)
-#define IC_MATCH_FL_CHIP_TYPE	(1 << 4)
-#define IC_INFO(lmps, hcir, hciv, bus) \
-	.match_flags = IC_MATCH_FL_LMPSUBV | IC_MATCH_FL_HCIREV | \
-		       IC_MATCH_FL_HCIVER | IC_MATCH_FL_HCIBUS, \
-	.lmp_subver = (lmps), \
-	.hci_rev = (hcir), \
-	.hci_ver = (hciv), \
+#define IC_MATCH_FL_LMPSUBV (1 << 0)
+#define IC_MATCH_FL_HCIREV (1 << 1)
+#define IC_MATCH_FL_HCIVER (1 << 2)
+#define IC_MATCH_FL_HCIBUS (1 << 3)
+#define IC_MATCH_FL_CHIP_TYPE (1 << 4)
+#define IC_INFO(lmps, hcir, hciv, bus)                              \
+	.match_flags = IC_MATCH_FL_LMPSUBV | IC_MATCH_FL_HCIREV |   \
+		       IC_MATCH_FL_HCIVER | IC_MATCH_FL_HCIBUS,     \
+	.lmp_subver = (lmps), .hci_rev = (hcir), .hci_ver = (hciv), \
 	.hci_bus = (bus)
 
-#define	RTL_CHIP_SUBVER (&(struct rtl_vendor_cmd) {{0x10, 0x38, 0x04, 0x28, 0x80}})
-#define	RTL_CHIP_REV    (&(struct rtl_vendor_cmd) {{0x10, 0x3A, 0x04, 0x28, 0x80}})
-#define	RTL_SEC_PROJ    (&(struct rtl_vendor_cmd) {{0x10, 0xA4, 0xAD, 0x00, 0xb0}})
+#define RTL_CHIP_SUBVER \
+	(&(struct rtl_vendor_cmd){ { 0x10, 0x38, 0x04, 0x28, 0x80 } })
+#define RTL_CHIP_REV \
+	(&(struct rtl_vendor_cmd){ { 0x10, 0x3A, 0x04, 0x28, 0x80 } })
+#define RTL_SEC_PROJ \
+	(&(struct rtl_vendor_cmd){ { 0x10, 0xA4, 0xAD, 0x00, 0xb0 } })
 
-#define RTL_PATCH_SNIPPETS		0x01
-#define RTL_PATCH_DUMMY_HEADER		0x02
-#define RTL_PATCH_SECURITY_HEADER	0x03
+#define RTL_PATCH_SNIPPETS 0x01
+#define RTL_PATCH_DUMMY_HEADER 0x02
+#define RTL_PATCH_SECURITY_HEADER 0x03
 
 enum btrtl_chip_id {
 	CHIP_ID_8723A,
@@ -105,28 +106,19 @@ struct btrtl_device_info {
 
 static const struct id_table ic_id_table[] = {
 	/* 8723A */
-	{ IC_INFO(RTL_ROM_LMP_8723A, 0xb, 0x6, HCI_USB),
-	  .config_needed = false,
-	  .has_rom_version = false,
-	  .fw_name = "rtl_bt/rtl8723a_fw",
-	  .cfg_name = NULL,
-	  .hw_info = "rtl8723au" },
+	{ IC_INFO(RTL_ROM_LMP_8723A, 0xb, 0x6, HCI_USB), .config_needed = false,
+	  .has_rom_version = false, .fw_name = "rtl_bt/rtl8723a_fw",
+	  .cfg_name = NULL, .hw_info = "rtl8723au" },
 
 	/* 8723BS */
-	{ IC_INFO(RTL_ROM_LMP_8723B, 0xb, 0x6, HCI_UART),
-	  .config_needed = true,
-	  .has_rom_version = true,
-	  .fw_name  = "rtl_bt/rtl8723bs_fw",
-	  .cfg_name = "rtl_bt/rtl8723bs_config",
-	  .hw_info  = "rtl8723bs" },
+	{ IC_INFO(RTL_ROM_LMP_8723B, 0xb, 0x6, HCI_UART), .config_needed = true,
+	  .has_rom_version = true, .fw_name = "rtl_bt/rtl8723bs_fw",
+	  .cfg_name = "rtl_bt/rtl8723bs_config", .hw_info = "rtl8723bs" },
 
 	/* 8723B */
-	{ IC_INFO(RTL_ROM_LMP_8723B, 0xb, 0x6, HCI_USB),
-	  .config_needed = false,
-	  .has_rom_version = true,
-	  .fw_name  = "rtl_bt/rtl8723b_fw",
-	  .cfg_name = "rtl_bt/rtl8723b_config",
-	  .hw_info  = "rtl8723bu" },
+	{ IC_INFO(RTL_ROM_LMP_8723B, 0xb, 0x6, HCI_USB), .config_needed = false,
+	  .has_rom_version = true, .fw_name = "rtl_bt/rtl8723b_fw",
+	  .cfg_name = "rtl_bt/rtl8723b_config", .hw_info = "rtl8723bu" },
 
 	/* 8723CS-CG */
 	{ .match_flags = IC_MATCH_FL_LMPSUBV | IC_MATCH_FL_CHIP_TYPE |
@@ -136,9 +128,9 @@ static const struct id_table ic_id_table[] = {
 	  .hci_bus = HCI_UART,
 	  .config_needed = true,
 	  .has_rom_version = true,
-	  .fw_name  = "rtl_bt/rtl8723cs_cg_fw",
+	  .fw_name = "rtl_bt/rtl8723cs_cg_fw",
 	  .cfg_name = "rtl_bt/rtl8723cs_cg_config",
-	  .hw_info  = "rtl8723cs-cg" },
+	  .hw_info = "rtl8723cs-cg" },
 
 	/* 8723CS-VF */
 	{ .match_flags = IC_MATCH_FL_LMPSUBV | IC_MATCH_FL_CHIP_TYPE |
@@ -148,9 +140,9 @@ static const struct id_table ic_id_table[] = {
 	  .hci_bus = HCI_UART,
 	  .config_needed = true,
 	  .has_rom_version = true,
-	  .fw_name  = "rtl_bt/rtl8723cs_vf_fw",
+	  .fw_name = "rtl_bt/rtl8723cs_vf_fw",
 	  .cfg_name = "rtl_bt/rtl8723cs_vf_config",
-	  .hw_info  = "rtl8723cs-vf" },
+	  .hw_info = "rtl8723cs-vf" },
 
 	/* 8723CS-XX */
 	{ .match_flags = IC_MATCH_FL_LMPSUBV | IC_MATCH_FL_CHIP_TYPE |
@@ -160,184 +152,124 @@ static const struct id_table ic_id_table[] = {
 	  .hci_bus = HCI_UART,
 	  .config_needed = true,
 	  .has_rom_version = true,
-	  .fw_name  = "rtl_bt/rtl8723cs_xx_fw",
+	  .fw_name = "rtl_bt/rtl8723cs_xx_fw",
 	  .cfg_name = "rtl_bt/rtl8723cs_xx_config",
-	  .hw_info  = "rtl8723cs" },
+	  .hw_info = "rtl8723cs" },
 
 	/* 8723D */
-	{ IC_INFO(RTL_ROM_LMP_8723B, 0xd, 0x8, HCI_USB),
-	  .config_needed = true,
-	  .has_rom_version = true,
-	  .fw_name  = "rtl_bt/rtl8723d_fw",
-	  .cfg_name = "rtl_bt/rtl8723d_config",
-	  .hw_info  = "rtl8723du" },
+	{ IC_INFO(RTL_ROM_LMP_8723B, 0xd, 0x8, HCI_USB), .config_needed = true,
+	  .has_rom_version = true, .fw_name = "rtl_bt/rtl8723d_fw",
+	  .cfg_name = "rtl_bt/rtl8723d_config", .hw_info = "rtl8723du" },
 
 	/* 8723DS */
-	{ IC_INFO(RTL_ROM_LMP_8723B, 0xd, 0x8, HCI_UART),
-	  .config_needed = true,
-	  .has_rom_version = true,
-	  .fw_name  = "rtl_bt/rtl8723ds_fw",
-	  .cfg_name = "rtl_bt/rtl8723ds_config",
-	  .hw_info  = "rtl8723ds" },
+	{ IC_INFO(RTL_ROM_LMP_8723B, 0xd, 0x8, HCI_UART), .config_needed = true,
+	  .has_rom_version = true, .fw_name = "rtl_bt/rtl8723ds_fw",
+	  .cfg_name = "rtl_bt/rtl8723ds_config", .hw_info = "rtl8723ds" },
 
 	/* 8821A */
-	{ IC_INFO(RTL_ROM_LMP_8821A, 0xa, 0x6, HCI_USB),
-	  .config_needed = false,
-	  .has_rom_version = true,
-	  .fw_name  = "rtl_bt/rtl8821a_fw",
-	  .cfg_name = "rtl_bt/rtl8821a_config",
-	  .hw_info  = "rtl8821au" },
+	{ IC_INFO(RTL_ROM_LMP_8821A, 0xa, 0x6, HCI_USB), .config_needed = false,
+	  .has_rom_version = true, .fw_name = "rtl_bt/rtl8821a_fw",
+	  .cfg_name = "rtl_bt/rtl8821a_config", .hw_info = "rtl8821au" },
 
 	/* 8821C */
-	{ IC_INFO(RTL_ROM_LMP_8821A, 0xc, 0x8, HCI_USB),
-	  .config_needed = false,
-	  .has_rom_version = true,
-	  .has_msft_ext = true,
-	  .fw_name  = "rtl_bt/rtl8821c_fw",
-	  .cfg_name = "rtl_bt/rtl8821c_config",
-	  .hw_info  = "rtl8821cu" },
+	{ IC_INFO(RTL_ROM_LMP_8821A, 0xc, 0x8, HCI_USB), .config_needed = false,
+	  .has_rom_version = true, .has_msft_ext = true,
+	  .fw_name = "rtl_bt/rtl8821c_fw", .cfg_name = "rtl_bt/rtl8821c_config",
+	  .hw_info = "rtl8821cu" },
 
 	/* 8821CS */
-	{ IC_INFO(RTL_ROM_LMP_8821A, 0xc, 0x8, HCI_UART),
-	  .config_needed = true,
-	  .has_rom_version = true,
-	  .has_msft_ext = true,
-	  .fw_name  = "rtl_bt/rtl8821cs_fw",
-	  .cfg_name = "rtl_bt/rtl8821cs_config",
-	  .hw_info  = "rtl8821cs" },
+	{ IC_INFO(RTL_ROM_LMP_8821A, 0xc, 0x8, HCI_UART), .config_needed = true,
+	  .has_rom_version = true, .has_msft_ext = true,
+	  .fw_name = "rtl_bt/rtl8821cs_fw",
+	  .cfg_name = "rtl_bt/rtl8821cs_config", .hw_info = "rtl8821cs" },
 
 	/* 8761A */
-	{ IC_INFO(RTL_ROM_LMP_8761A, 0xa, 0x6, HCI_USB),
-	  .config_needed = false,
-	  .has_rom_version = true,
-	  .fw_name  = "rtl_bt/rtl8761a_fw",
-	  .cfg_name = "rtl_bt/rtl8761a_config",
-	  .hw_info  = "rtl8761au" },
+	{ IC_INFO(RTL_ROM_LMP_8761A, 0xa, 0x6, HCI_USB), .config_needed = false,
+	  .has_rom_version = true, .fw_name = "rtl_bt/rtl8761a_fw",
+	  .cfg_name = "rtl_bt/rtl8761a_config", .hw_info = "rtl8761au" },
 
 	/* 8761B */
 	{ IC_INFO(RTL_ROM_LMP_8761A, 0xb, 0xa, HCI_UART),
-	  .config_needed = false,
-	  .has_rom_version = true,
-	  .has_msft_ext = true,
-	  .fw_name  = "rtl_bt/rtl8761b_fw",
-	  .cfg_name = "rtl_bt/rtl8761b_config",
-	  .hw_info  = "rtl8761btv" },
+	  .config_needed = false, .has_rom_version = true, .has_msft_ext = true,
+	  .fw_name = "rtl_bt/rtl8761b_fw", .cfg_name = "rtl_bt/rtl8761b_config",
+	  .hw_info = "rtl8761btv" },
 
 	/* 8761BU */
-	{ IC_INFO(RTL_ROM_LMP_8761A, 0xb, 0xa, HCI_USB),
-	  .config_needed = false,
-	  .has_rom_version = true,
-	  .fw_name  = "rtl_bt/rtl8761bu_fw",
-	  .cfg_name = "rtl_bt/rtl8761bu_config",
-	  .hw_info  = "rtl8761bu" },
+	{ IC_INFO(RTL_ROM_LMP_8761A, 0xb, 0xa, HCI_USB), .config_needed = false,
+	  .has_rom_version = true, .fw_name = "rtl_bt/rtl8761bu_fw",
+	  .cfg_name = "rtl_bt/rtl8761bu_config", .hw_info = "rtl8761bu" },
 
 	/* 8761CU */
-	{ IC_INFO(RTL_ROM_LMP_8761A, 0x0e, 0, HCI_USB),
-	  .config_needed = false,
-	  .has_rom_version = true,
-	  .fw_name  = "rtl_bt/rtl8761cu_fw",
-	  .cfg_name = "rtl_bt/rtl8761cu_config",
-	  .hw_info  = "rtl8761cu" },
+	{ IC_INFO(RTL_ROM_LMP_8761A, 0x0e, 0, HCI_USB), .config_needed = false,
+	  .has_rom_version = true, .fw_name = "rtl_bt/rtl8761cu_fw",
+	  .cfg_name = "rtl_bt/rtl8761cu_config", .hw_info = "rtl8761cu" },
 
 	/* 8822C with UART interface */
-	{ IC_INFO(RTL_ROM_LMP_8822B, 0xc, 0x8, HCI_UART),
-	  .config_needed = true,
-	  .has_rom_version = true,
-	  .has_msft_ext = true,
-	  .fw_name  = "rtl_bt/rtl8822cs_fw",
-	  .cfg_name = "rtl_bt/rtl8822cs_config",
-	  .hw_info  = "rtl8822cs" },
+	{ IC_INFO(RTL_ROM_LMP_8822B, 0xc, 0x8, HCI_UART), .config_needed = true,
+	  .has_rom_version = true, .has_msft_ext = true,
+	  .fw_name = "rtl_bt/rtl8822cs_fw",
+	  .cfg_name = "rtl_bt/rtl8822cs_config", .hw_info = "rtl8822cs" },
 
 	/* 8822C with UART interface */
-	{ IC_INFO(RTL_ROM_LMP_8822B, 0xc, 0xa, HCI_UART),
-	  .config_needed = true,
-	  .has_rom_version = true,
-	  .has_msft_ext = true,
-	  .fw_name  = "rtl_bt/rtl8822cs_fw",
-	  .cfg_name = "rtl_bt/rtl8822cs_config",
-	  .hw_info  = "rtl8822cs" },
+	{ IC_INFO(RTL_ROM_LMP_8822B, 0xc, 0xa, HCI_UART), .config_needed = true,
+	  .has_rom_version = true, .has_msft_ext = true,
+	  .fw_name = "rtl_bt/rtl8822cs_fw",
+	  .cfg_name = "rtl_bt/rtl8822cs_config", .hw_info = "rtl8822cs" },
 
 	/* 8822C with USB interface */
-	{ IC_INFO(RTL_ROM_LMP_8822B, 0xc, 0xa, HCI_USB),
-	  .config_needed = false,
-	  .has_rom_version = true,
-	  .has_msft_ext = true,
-	  .fw_name  = "rtl_bt/rtl8822cu_fw",
-	  .cfg_name = "rtl_bt/rtl8822cu_config",
-	  .hw_info  = "rtl8822cu" },
+	{ IC_INFO(RTL_ROM_LMP_8822B, 0xc, 0xa, HCI_USB), .config_needed = false,
+	  .has_rom_version = true, .has_msft_ext = true,
+	  .fw_name = "rtl_bt/rtl8822cu_fw",
+	  .cfg_name = "rtl_bt/rtl8822cu_config", .hw_info = "rtl8822cu" },
 
 	/* 8822B */
-	{ IC_INFO(RTL_ROM_LMP_8822B, 0xb, 0x7, HCI_USB),
-	  .config_needed = true,
-	  .has_rom_version = true,
-	  .has_msft_ext = true,
-	  .fw_name  = "rtl_bt/rtl8822b_fw",
-	  .cfg_name = "rtl_bt/rtl8822b_config",
-	  .hw_info  = "rtl8822bu" },
+	{ IC_INFO(RTL_ROM_LMP_8822B, 0xb, 0x7, HCI_USB), .config_needed = true,
+	  .has_rom_version = true, .has_msft_ext = true,
+	  .fw_name = "rtl_bt/rtl8822b_fw", .cfg_name = "rtl_bt/rtl8822b_config",
+	  .hw_info = "rtl8822bu" },
 
 	/* 8852A */
-	{ IC_INFO(RTL_ROM_LMP_8852A, 0xa, 0xb, HCI_USB),
-	  .config_needed = false,
-	  .has_rom_version = true,
-	  .has_msft_ext = true,
-	  .fw_name  = "rtl_bt/rtl8852au_fw",
-	  .cfg_name = "rtl_bt/rtl8852au_config",
-	  .hw_info  = "rtl8852au" },
+	{ IC_INFO(RTL_ROM_LMP_8852A, 0xa, 0xb, HCI_USB), .config_needed = false,
+	  .has_rom_version = true, .has_msft_ext = true,
+	  .fw_name = "rtl_bt/rtl8852au_fw",
+	  .cfg_name = "rtl_bt/rtl8852au_config", .hw_info = "rtl8852au" },
 
 	/* 8852B with UART interface */
-	{ IC_INFO(RTL_ROM_LMP_8852A, 0xb, 0xb, HCI_UART),
-	  .config_needed = true,
-	  .has_rom_version = true,
-	  .has_msft_ext = true,
-	  .fw_name  = "rtl_bt/rtl8852bs_fw",
-	  .cfg_name = "rtl_bt/rtl8852bs_config",
-	  .hw_info  = "rtl8852bs" },
+	{ IC_INFO(RTL_ROM_LMP_8852A, 0xb, 0xb, HCI_UART), .config_needed = true,
+	  .has_rom_version = true, .has_msft_ext = true,
+	  .fw_name = "rtl_bt/rtl8852bs_fw",
+	  .cfg_name = "rtl_bt/rtl8852bs_config", .hw_info = "rtl8852bs" },
 
 	/* 8852B */
-	{ IC_INFO(RTL_ROM_LMP_8852A, 0xb, 0xb, HCI_USB),
-	  .config_needed = false,
-	  .has_rom_version = true,
-	  .has_msft_ext = true,
-	  .fw_name  = "rtl_bt/rtl8852bu_fw",
-	  .cfg_name = "rtl_bt/rtl8852bu_config",
-	  .hw_info  = "rtl8852bu" },
+	{ IC_INFO(RTL_ROM_LMP_8852A, 0xb, 0xb, HCI_USB), .config_needed = false,
+	  .has_rom_version = true, .has_msft_ext = true,
+	  .fw_name = "rtl_bt/rtl8852bu_fw",
+	  .cfg_name = "rtl_bt/rtl8852bu_config", .hw_info = "rtl8852bu" },
 
 	/* 8852C */
-	{ IC_INFO(RTL_ROM_LMP_8852A, 0xc, 0xc, HCI_USB),
-	  .config_needed = false,
-	  .has_rom_version = true,
-	  .has_msft_ext = true,
-	  .fw_name  = "rtl_bt/rtl8852cu_fw",
-	  .cfg_name = "rtl_bt/rtl8852cu_config",
-	  .hw_info  = "rtl8852cu" },
+	{ IC_INFO(RTL_ROM_LMP_8852A, 0xc, 0xc, HCI_USB), .config_needed = false,
+	  .has_rom_version = true, .has_msft_ext = true,
+	  .fw_name = "rtl_bt/rtl8852cu_fw",
+	  .cfg_name = "rtl_bt/rtl8852cu_config", .hw_info = "rtl8852cu" },
 
 	/* 8851B */
-	{ IC_INFO(RTL_ROM_LMP_8851B, 0xb, 0xc, HCI_USB),
-	  .config_needed = false,
-	  .has_rom_version = true,
-	  .has_msft_ext = false,
-	  .fw_name  = "rtl_bt/rtl8851bu_fw",
-	  .cfg_name = "rtl_bt/rtl8851bu_config",
-	  .hw_info  = "rtl8851bu" },
+	{ IC_INFO(RTL_ROM_LMP_8851B, 0xb, 0xc, HCI_USB), .config_needed = false,
+	  .has_rom_version = true, .has_msft_ext = false,
+	  .fw_name = "rtl_bt/rtl8851bu_fw",
+	  .cfg_name = "rtl_bt/rtl8851bu_config", .hw_info = "rtl8851bu" },
 
 	/* 8922A */
-	{ IC_INFO(RTL_ROM_LMP_8922A, 0xa, 0xc, HCI_USB),
-	  .config_needed = false,
-	  .has_rom_version = true,
-	  .has_msft_ext = true,
-	  .fw_name  = "rtl_bt/rtl8922au_fw",
-	  .cfg_name = "rtl_bt/rtl8922au_config",
-	  .hw_info  = "rtl8922au" },
+	{ IC_INFO(RTL_ROM_LMP_8922A, 0xa, 0xc, HCI_USB), .config_needed = false,
+	  .has_rom_version = true, .has_msft_ext = true,
+	  .fw_name = "rtl_bt/rtl8922au_fw",
+	  .cfg_name = "rtl_bt/rtl8922au_config", .hw_info = "rtl8922au" },
 
 	/* 8852BT/8852BE-VT */
 	{ IC_INFO(RTL_ROM_LMP_8852A, 0x87, 0xc, HCI_USB),
-	  .config_needed = false,
-	  .has_rom_version = true,
-	  .has_msft_ext = true,
-	  .fw_name  = "rtl_bt/rtl8852btu_fw",
-	  .cfg_name = "rtl_bt/rtl8852btu_config",
-	  .hw_info  = "rtl8852btu" },
-	};
+	  .config_needed = false, .has_rom_version = true, .has_msft_ext = true,
+	  .fw_name = "rtl_bt/rtl8852btu_fw",
+	  .cfg_name = "rtl_bt/rtl8852btu_config", .hw_info = "rtl8852btu" },
+};
 
 static const struct id_table *btrtl_match_ic(u16 lmp_subver, u16 hci_rev,
 					     u8 hci_ver, u8 hci_bus,
@@ -384,7 +316,8 @@ static struct sk_buff *btrtl_read_local_version(struct hci_dev *hdev)
 	}
 
 	if (skb->len != sizeof(struct hci_rp_read_local_version)) {
-		rtl_dev_err(hdev, "HCI_OP_READ_LOCAL_VERSION event length mismatch");
+		rtl_dev_err(hdev,
+			    "HCI_OP_READ_LOCAL_VERSION event length mismatch");
 		kfree_skb(skb);
 		return ERR_PTR(-EIO);
 	}
@@ -427,8 +360,7 @@ static int btrtl_vendor_read_reg16(struct hci_dev *hdev,
 	struct sk_buff *skb;
 	int err = 0;
 
-	skb = __hci_cmd_sync(hdev, 0xfc61, sizeof(*cmd), cmd,
-			     HCI_INIT_TIMEOUT);
+	skb = __hci_cmd_sync(hdev, 0xfc61, sizeof(*cmd), cmd, HCI_INIT_TIMEOUT);
 	if (IS_ERR(skb)) {
 		err = PTR_ERR(skb);
 		rtl_dev_err(hdev, "RTL: Read reg16 failed (%d)", err);
@@ -457,7 +389,7 @@ static void *rtl_iov_pull_data(struct rtl_iovec *iov, u32 len)
 		return NULL;
 
 	iov->data += len;
-	iov->len  -= len;
+	iov->len -= len;
 
 	return data;
 }
@@ -492,7 +424,7 @@ static int btrtl_parse_section(struct hci_dev *hdev,
 	int rc = 0;
 	struct rtl_iovec iov = {
 		.data = data,
-		.len  = len,
+		.len = len,
 	};
 
 	hdr = rtl_iov_pull_data(&iov, sizeof(*hdr));
@@ -529,10 +461,10 @@ static int btrtl_parse_section(struct hci_dev *hdev,
 			return -ENOMEM;
 		subsec->opcode = opcode;
 		subsec->prio = common_subsec->prio;
-		subsec->len  = subsec_len;
+		subsec->len = subsec_len;
 		subsec->data = ptr;
 		btrtl_insert_ordered_subsec(subsec, btrtl_dev);
-		rc  += subsec_len;
+		rc += subsec_len;
 	}
 
 	return rc;
@@ -555,7 +487,7 @@ static int rtlbt_parse_firmware_v2(struct hci_dev *hdev,
 	u8 *ptr;
 	struct rtl_iovec iov = {
 		.data = btrtl_dev->fw_data,
-		.len  = btrtl_dev->fw_len - 7, /* Cut the tail */
+		.len = btrtl_dev->fw_len - 7, /* Cut the tail */
 	};
 
 	key_id = btrtl_dev->key_id;
@@ -573,7 +505,7 @@ static int rtlbt_parse_firmware_v2(struct hci_dev *hdev,
 		if (!section)
 			break;
 		section_len = le32_to_cpu(section->len);
-		opcode      = le32_to_cpu(section->opcode);
+		opcode = le32_to_cpu(section->opcode);
 
 		rtl_dev_dbg(hdev, "opcode 0x%04x", section->opcode);
 
@@ -583,8 +515,8 @@ static int rtlbt_parse_firmware_v2(struct hci_dev *hdev,
 
 		switch (opcode) {
 		case RTL_PATCH_SNIPPETS:
-			rc = btrtl_parse_section(hdev, btrtl_dev, opcode,
-						 ptr, section_len);
+			rc = btrtl_parse_section(hdev, btrtl_dev, opcode, ptr,
+						 section_len);
 			break;
 		case RTL_PATCH_SECURITY_HEADER:
 			/* If key_id from chip is zero, ignore all security
@@ -592,12 +524,12 @@ static int rtlbt_parse_firmware_v2(struct hci_dev *hdev,
 			 */
 			if (!key_id)
 				continue;
-			rc = btrtl_parse_section(hdev, btrtl_dev, opcode,
-						 ptr, section_len);
+			rc = btrtl_parse_section(hdev, btrtl_dev, opcode, ptr,
+						 section_len);
 			break;
 		case RTL_PATCH_DUMMY_HEADER:
-			rc = btrtl_parse_section(hdev, btrtl_dev, opcode,
-						 ptr, section_len);
+			rc = btrtl_parse_section(hdev, btrtl_dev, opcode, ptr,
+						 section_len);
 			break;
 		default:
 			continue;
@@ -655,23 +587,20 @@ static int rtlbt_parse_firmware(struct hci_dev *hdev,
 		__u16 lmp_subver;
 		__u8 id;
 	} project_id_to_lmp_subver[] = {
-		{ RTL_ROM_LMP_8723A, 0 },
-		{ RTL_ROM_LMP_8723B, 1 },
-		{ RTL_ROM_LMP_8821A, 2 },
-		{ RTL_ROM_LMP_8761A, 3 },
-		{ RTL_ROM_LMP_8703B, 7 },
-		{ RTL_ROM_LMP_8822B, 8 },
-		{ RTL_ROM_LMP_8723B, 9 },	/* 8723D */
-		{ RTL_ROM_LMP_8821A, 10 },	/* 8821C */
-		{ RTL_ROM_LMP_8822B, 13 },	/* 8822C */
-		{ RTL_ROM_LMP_8761A, 14 },	/* 8761B */
-		{ RTL_ROM_LMP_8852A, 18 },	/* 8852A */
-		{ RTL_ROM_LMP_8852A, 20 },	/* 8852B */
-		{ RTL_ROM_LMP_8852A, 25 },	/* 8852C */
-		{ RTL_ROM_LMP_8851B, 36 },	/* 8851B */
-		{ RTL_ROM_LMP_8922A, 44 },	/* 8922A */
-		{ RTL_ROM_LMP_8852A, 47 },	/* 8852BT */
-		{ RTL_ROM_LMP_8761A, 51 },	/* 8761C */
+		{ RTL_ROM_LMP_8723A, 0 },  { RTL_ROM_LMP_8723B, 1 },
+		{ RTL_ROM_LMP_8821A, 2 },  { RTL_ROM_LMP_8761A, 3 },
+		{ RTL_ROM_LMP_8703B, 7 },  { RTL_ROM_LMP_8822B, 8 },
+		{ RTL_ROM_LMP_8723B, 9 }, /* 8723D */
+		{ RTL_ROM_LMP_8821A, 10 }, /* 8821C */
+		{ RTL_ROM_LMP_8822B, 13 }, /* 8822C */
+		{ RTL_ROM_LMP_8761A, 14 }, /* 8761B */
+		{ RTL_ROM_LMP_8852A, 18 }, /* 8852A */
+		{ RTL_ROM_LMP_8852A, 20 }, /* 8852B */
+		{ RTL_ROM_LMP_8852A, 25 }, /* 8852C */
+		{ RTL_ROM_LMP_8851B, 36 }, /* 8851B */
+		{ RTL_ROM_LMP_8922A, 44 }, /* 8922A */
+		{ RTL_ROM_LMP_8852A, 47 }, /* 8852BT */
+		{ RTL_ROM_LMP_8761A, 51 }, /* 8761C */
 	};
 
 	if (btrtl_dev->fw_len <= 8)
@@ -679,10 +608,10 @@ static int rtlbt_parse_firmware(struct hci_dev *hdev,
 
 	if (!memcmp(btrtl_dev->fw_data, RTL_EPATCH_SIGNATURE, 8))
 		min_size = sizeof(struct rtl_epatch_header) +
-				sizeof(extension_sig) + 3;
+			   sizeof(extension_sig) + 3;
 	else if (!memcmp(btrtl_dev->fw_data, RTL_EPATCH_SIGNATURE_V2, 8))
 		min_size = sizeof(struct rtl_epatch_header_v2) +
-				sizeof(extension_sig) + 3;
+			   sizeof(extension_sig) + 3;
 	else
 		return -EINVAL;
 
@@ -743,7 +672,7 @@ static int rtlbt_parse_firmware(struct hci_dev *hdev,
 	}
 
 	if (btrtl_dev->ic_info->lmp_subver !=
-				project_id_to_lmp_subver[i].lmp_subver) {
+	    project_id_to_lmp_subver[i].lmp_subver) {
 		rtl_dev_err(hdev, "firmware is for %x but this is a %x",
 			    project_id_to_lmp_subver[i].lmp_subver,
 			    btrtl_dev->ic_info->lmp_subver);
@@ -762,7 +691,8 @@ static int rtlbt_parse_firmware(struct hci_dev *hdev,
 
 	BT_DBG("fw_version=%x, num_patches=%d",
 	       le32_to_cpu(epatch_info->fw_version), num_patches);
-	coredump_info->rtl_dump.fw_version = le32_to_cpu(epatch_info->fw_version);
+	coredump_info->rtl_dump.fw_version =
+		le32_to_cpu(epatch_info->fw_version);
 
 	/* After the rtl_epatch_header there is a funky patch metadata section.
 	 * Assuming 2 patches, the layout is:
@@ -778,8 +708,8 @@ static int rtlbt_parse_firmware(struct hci_dev *hdev,
 	patch_length_base = chip_id_base + (sizeof(u16) * num_patches);
 	patch_offset_base = patch_length_base + (sizeof(u16) * num_patches);
 	for (i = 0; i < num_patches; i++) {
-		u16 chip_id = get_unaligned_le16(chip_id_base +
-						 (i * sizeof(u16)));
+		u16 chip_id =
+			get_unaligned_le16(chip_id_base + (i * sizeof(u16)));
 		if (chip_id == btrtl_dev->rom_version + 1) {
 			patch_length = get_unaligned_le16(patch_length_base +
 							  (i * sizeof(u16)));
@@ -844,7 +774,7 @@ static int rtl_download_firmware(struct hci_dev *hdev,
 			frag_len = fw_len % RTL_FRAG_LEN;
 		}
 		rtl_dev_dbg(hdev, "download fw (%d/%d). index = %d", i,
-				frag_num, dl_cmd->index);
+			    frag_num, dl_cmd->index);
 		memcpy(dl_cmd->data, data, frag_len);
 
 		/* Send download command */
@@ -876,8 +806,8 @@ static int rtl_download_firmware(struct hci_dev *hdev,
 	}
 
 	rp = (struct hci_rp_read_local_version *)skb->data;
-	rtl_dev_info(hdev, "fw version 0x%04x%04x",
-		     __le16_to_cpu(rp->hci_rev), __le16_to_cpu(rp->lmp_subver));
+	rtl_dev_info(hdev, "fw version 0x%04x%04x", __le16_to_cpu(rp->hci_rev),
+		     __le16_to_cpu(rp->lmp_subver));
 	kfree_skb(skb);
 
 out:
@@ -981,7 +911,8 @@ static void btrtl_dmp_hdr(struct hci_dev *hdev, struct sk_buff *skb)
 		 coredump_info->rtl_dump.fw_version);
 	skb_put_data(skb, buf, strlen(buf));
 
-	snprintf(buf, sizeof(buf), "Driver: %s\n", coredump_info->rtl_dump.driver_name);
+	snprintf(buf, sizeof(buf), "Driver: %s\n",
+		 coredump_info->rtl_dump.driver_name);
 	skb_put_data(skb, buf, strlen(buf));
 
 	snprintf(buf, sizeof(buf), "Vendor: Realtek\n");
@@ -991,7 +922,6 @@ static void btrtl_dmp_hdr(struct hci_dev *hdev, struct sk_buff *skb)
 static void btrtl_register_devcoredump_support(struct hci_dev *hdev)
 {
 	hci_devcd_register(hdev, btrtl_coredump, btrtl_dmp_hdr, NULL);
-
 }
 
 void btrtl_set_driver_name(struct hci_dev *hdev, const char *driver_name)
@@ -1011,20 +941,19 @@ static bool rtl_has_chip_type(u16 lmp_subver)
 		break;
 	}
 
-	return  false;
+	return false;
 }
 
 static int rtl_read_chip_type(struct hci_dev *hdev, u8 *type)
 {
 	struct rtl_chip_type_evt *chip_type;
 	struct sk_buff *skb;
-	const unsigned char cmd_buf[] = {0x00, 0x94, 0xa0, 0x00, 0xb0};
+	const unsigned char cmd_buf[] = { 0x00, 0x94, 0xa0, 0x00, 0xb0 };
 
 	/* Read RTL chip type command */
 	skb = __hci_cmd_sync(hdev, 0xfc61, 5, cmd_buf, HCI_INIT_TIMEOUT);
 	if (IS_ERR(skb)) {
-		rtl_dev_err(hdev, "Read chip type failed (%ld)",
-			    PTR_ERR(skb));
+		rtl_dev_err(hdev, "Read chip type failed (%ld)", PTR_ERR(skb));
 		return PTR_ERR(skb);
 	}
 
@@ -1035,8 +964,8 @@ static int rtl_read_chip_type(struct hci_dev *hdev, u8 *type)
 		return -EIO;
 	}
 
-	rtl_dev_info(hdev, "chip_type status=%x type=%x",
-		     chip_type->status, chip_type->type);
+	rtl_dev_info(hdev, "chip_type status=%x type=%x", chip_type->status,
+		     chip_type->type);
 
 	*type = chip_type->type & 0x0f;
 
@@ -1116,9 +1045,9 @@ check_version:
 
 	resp = (struct hci_rp_read_local_version *)skb->data;
 
-	hci_ver    = resp->hci_ver;
-	hci_rev    = le16_to_cpu(resp->hci_rev);
-	lmp_ver    = resp->lmp_ver;
+	hci_ver = resp->hci_ver;
+	hci_rev = le16_to_cpu(resp->hci_rev);
+	lmp_ver = resp->lmp_ver;
 	lmp_subver = le16_to_cpu(resp->lmp_subver);
 
 	kfree_skb(skb);
@@ -1133,9 +1062,10 @@ check_version:
 					    hdev->bus, chip_type);
 
 next:
-	rtl_dev_info(hdev, "examining hci_ver=%02x hci_rev=%04x lmp_ver=%02x lmp_subver=%04x",
-		     hci_ver, hci_rev,
-		     lmp_ver, lmp_subver);
+	rtl_dev_info(
+		hdev,
+		"examining hci_ver=%02x hci_rev=%04x lmp_ver=%02x lmp_subver=%04x",
+		hci_ver, hci_rev, lmp_ver, lmp_subver);
 
 	if (!btrtl_dev->ic_info && !btrtl_dev->drop_fw)
 		btrtl_dev->drop_fw = true;
@@ -1169,8 +1099,10 @@ next:
 	}
 
 	if (!btrtl_dev->ic_info) {
-		rtl_dev_info(hdev, "unknown IC info, lmp subver %04x, hci rev %04x, hci ver %04x",
-			    lmp_subver, hci_rev, hci_ver);
+		rtl_dev_info(
+			hdev,
+			"unknown IC info, lmp subver %04x, hci rev %04x, hci ver %04x",
+			lmp_subver, hci_rev, hci_ver);
 		return btrtl_dev;
 	}
 
@@ -1196,16 +1128,16 @@ next:
 	btrtl_dev->fw_len = -EIO;
 	if (lmp_subver == RTL_ROM_LMP_8852A && hci_rev == 0x000c) {
 		snprintf(fw_name, sizeof(fw_name), "%s_v2.bin",
-				btrtl_dev->ic_info->fw_name);
-		btrtl_dev->fw_len = rtl_load_file(hdev, fw_name,
-				&btrtl_dev->fw_data);
+			 btrtl_dev->ic_info->fw_name);
+		btrtl_dev->fw_len =
+			rtl_load_file(hdev, fw_name, &btrtl_dev->fw_data);
 	}
 
 	if (btrtl_dev->fw_len < 0) {
 		snprintf(fw_name, sizeof(fw_name), "%s.bin",
-				btrtl_dev->ic_info->fw_name);
-		btrtl_dev->fw_len = rtl_load_file(hdev, fw_name,
-				&btrtl_dev->fw_data);
+			 btrtl_dev->ic_info->fw_name);
+		btrtl_dev->fw_len =
+			rtl_load_file(hdev, fw_name, &btrtl_dev->fw_data);
 	}
 
 	if (btrtl_dev->fw_len < 0) {
@@ -1223,8 +1155,8 @@ next:
 			snprintf(cfg_name, sizeof(cfg_name), "%s.bin",
 				 btrtl_dev->ic_info->cfg_name);
 		}
-		btrtl_dev->cfg_len = rtl_load_file(hdev, cfg_name,
-						   &btrtl_dev->cfg_data);
+		btrtl_dev->cfg_len =
+			rtl_load_file(hdev, cfg_name, &btrtl_dev->cfg_data);
 		if (btrtl_dev->ic_info->config_needed &&
 		    btrtl_dev->cfg_len <= 0) {
 			rtl_dev_err(hdev, "mandatory config file %s not found",
@@ -1243,7 +1175,8 @@ next:
 		hci_set_msft_opcode(hdev, 0xFCF0);
 
 	if (btrtl_dev->ic_info)
-		coredump_info->rtl_dump.controller = btrtl_dev->ic_info->hw_info;
+		coredump_info->rtl_dump.controller =
+			btrtl_dev->ic_info->hw_info;
 
 	return btrtl_dev;
 
@@ -1323,7 +1256,8 @@ void btrtl_set_quirks(struct hci_dev *hdev, struct btrtl_device_info *btrtl_dev)
 		 * the zero length of USB packets for the ALT 6 supported chips
 		 */
 		if (btrtl_dev->project_id == CHIP_ID_8852C)
-			btrealtek_set_flag(hdev, REALTEK_ALT6_CONTINUOUS_TX_CHIP);
+			btrealtek_set_flag(hdev,
+					   REALTEK_ALT6_CONTINUOUS_TX_CHIP);
 
 		if (btrtl_dev->project_id == CHIP_ID_8852A ||
 		    btrtl_dev->project_id == CHIP_ID_8852B ||
@@ -1370,7 +1304,8 @@ int btrtl_setup_realtek(struct hci_dev *hdev)
 	btrtl_set_quirks(hdev, btrtl_dev);
 
 	if (btrtl_dev->ic_info) {
-		hci_set_hw_info(hdev,
+		hci_set_hw_info(
+			hdev,
 			"RTL lmp_subver=%u hci_rev=%u hci_ver=%u hci_bus=%u",
 			btrtl_dev->ic_info->lmp_subver,
 			btrtl_dev->ic_info->hci_rev,
@@ -1467,7 +1402,7 @@ int btrtl_get_uart_settings(struct hci_dev *hdev,
 		return -EINVAL;
 	}
 
-	for (i = 0; i < total_data_len; ) {
+	for (i = 0; i < total_data_len;) {
 		entry = ((void *)config->entry) + i;
 
 		switch (le16_to_cpu(entry->offset)) {
@@ -1478,8 +1413,8 @@ int btrtl_get_uart_settings(struct hci_dev *hdev,
 			}
 
 			*device_baudrate = get_unaligned_le32(entry->data);
-			*controller_baudrate = btrtl_convert_baudrate(
-							*device_baudrate);
+			*controller_baudrate =
+				btrtl_convert_baudrate(*device_baudrate);
 
 			if (entry->len >= 13)
 				*flow_control = !!(entry->data[12] & BIT(2));
@@ -1491,7 +1426,7 @@ int btrtl_get_uart_settings(struct hci_dev *hdev,
 
 		default:
 			rtl_dev_dbg(hdev, "skipping config entry 0x%x (len %u)",
-				   le16_to_cpu(entry->offset), entry->len);
+				    le16_to_cpu(entry->offset), entry->len);
 			break;
 		}
 

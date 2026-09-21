@@ -21,27 +21,31 @@
 
 #define VERSION "0.1"
 
-#define BDADDR_BCM20702A0 (&(bdaddr_t) {{0x00, 0xa0, 0x02, 0x70, 0x20, 0x00}})
-#define BDADDR_BCM20702A1 (&(bdaddr_t) {{0x00, 0x00, 0xa0, 0x02, 0x70, 0x20}})
-#define BDADDR_BCM2076B1 (&(bdaddr_t) {{0x79, 0x56, 0x00, 0xa0, 0x76, 0x20}})
-#define BDADDR_BCM43430A0 (&(bdaddr_t) {{0xac, 0x1f, 0x12, 0xa0, 0x43, 0x43}})
-#define BDADDR_BCM43430A1 (&(bdaddr_t) {{0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa}})
-#define BDADDR_BCM4324B3 (&(bdaddr_t) {{0x00, 0x00, 0x00, 0xb3, 0x24, 0x43}})
-#define BDADDR_BCM4330B1 (&(bdaddr_t) {{0x00, 0x00, 0x00, 0xb1, 0x30, 0x43}})
-#define BDADDR_BCM4334B0 (&(bdaddr_t) {{0x00, 0x00, 0x00, 0xb0, 0x34, 0x43}})
-#define BDADDR_BCM4345C5 (&(bdaddr_t) {{0xac, 0x1f, 0x00, 0xc5, 0x45, 0x43}})
-#define BDADDR_BCM43341B (&(bdaddr_t) {{0xac, 0x1f, 0x00, 0x1b, 0x34, 0x43}})
+#define BDADDR_BCM20702A0 \
+	(&(bdaddr_t){ { 0x00, 0xa0, 0x02, 0x70, 0x20, 0x00 } })
+#define BDADDR_BCM20702A1 \
+	(&(bdaddr_t){ { 0x00, 0x00, 0xa0, 0x02, 0x70, 0x20 } })
+#define BDADDR_BCM2076B1 (&(bdaddr_t){ { 0x79, 0x56, 0x00, 0xa0, 0x76, 0x20 } })
+#define BDADDR_BCM43430A0 \
+	(&(bdaddr_t){ { 0xac, 0x1f, 0x12, 0xa0, 0x43, 0x43 } })
+#define BDADDR_BCM43430A1 \
+	(&(bdaddr_t){ { 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa } })
+#define BDADDR_BCM4324B3 (&(bdaddr_t){ { 0x00, 0x00, 0x00, 0xb3, 0x24, 0x43 } })
+#define BDADDR_BCM4330B1 (&(bdaddr_t){ { 0x00, 0x00, 0x00, 0xb1, 0x30, 0x43 } })
+#define BDADDR_BCM4334B0 (&(bdaddr_t){ { 0x00, 0x00, 0x00, 0xb0, 0x34, 0x43 } })
+#define BDADDR_BCM4345C5 (&(bdaddr_t){ { 0xac, 0x1f, 0x00, 0xc5, 0x45, 0x43 } })
+#define BDADDR_BCM43341B (&(bdaddr_t){ { 0xac, 0x1f, 0x00, 0x1b, 0x34, 0x43 } })
 
-#define BCM_FW_NAME_LEN			64
-#define BCM_FW_NAME_COUNT_MAX		4
+#define BCM_FW_NAME_LEN 64
+#define BCM_FW_NAME_COUNT_MAX 4
 /* For kmalloc-ing the fw-name array instead of putting it on the stack */
 typedef char bcm_fw_name[BCM_FW_NAME_LEN];
 
 #ifdef CONFIG_EFI
 static int btbcm_set_bdaddr_from_efi(struct hci_dev *hdev)
 {
-	efi_guid_t guid = EFI_GUID(0x74b00bd9, 0x805a, 0x4d61, 0xb5, 0x1f,
-				   0x43, 0x26, 0x81, 0x23, 0xd1, 0x13);
+	efi_guid_t guid = EFI_GUID(0x74b00bd9, 0x805a, 0x4d61, 0xb5, 0x1f, 0x43,
+				   0x26, 0x81, 0x23, 0xd1, 0x13);
 	bdaddr_t efi_bdaddr, bdaddr;
 	efi_status_t status;
 	unsigned long len;
@@ -84,7 +88,8 @@ int btbcm_check_bdaddr(struct hci_dev *hdev)
 	if (IS_ERR(skb)) {
 		int err = PTR_ERR(skb);
 
-		bt_dev_err(hdev, "BCM: Reading device address failed (%d)", err);
+		bt_dev_err(hdev, "BCM: Reading device address failed (%d)",
+			   err);
 		return err;
 	}
 
@@ -133,7 +138,8 @@ int btbcm_check_bdaddr(struct hci_dev *hdev)
 	    !bacmp(&bda->bdaddr, BDADDR_BCM43341B)) {
 		/* Try falling back to BDADDR EFI variable */
 		if (btbcm_set_bdaddr_from_efi(hdev) != 0) {
-			bt_dev_info(hdev, "BCM: Using default device address (%pMR)",
+			bt_dev_info(hdev,
+				    "BCM: Using default device address (%pMR)",
 				    &bda->bdaddr);
 			hci_set_quirk(hdev, HCI_QUIRK_INVALID_BDADDR);
 		}
@@ -153,7 +159,8 @@ int btbcm_set_bdaddr(struct hci_dev *hdev, const bdaddr_t *bdaddr)
 	skb = __hci_cmd_sync(hdev, 0xfc01, 6, bdaddr, HCI_INIT_TIMEOUT);
 	if (IS_ERR(skb)) {
 		err = PTR_ERR(skb);
-		bt_dev_err(hdev, "BCM: Change address command failed (%d)", err);
+		bt_dev_err(hdev, "BCM: Change address command failed (%d)",
+			   err);
 		return err;
 	}
 	kfree_skb(skb);
@@ -491,46 +498,46 @@ struct bcm_subver_table {
 };
 
 static const struct bcm_subver_table bcm_uart_subver_table[] = {
-	{ 0x1111, "BCM4362A2"	},	/* 000.017.017 */
-	{ 0x4103, "BCM4330B1"	},	/* 002.001.003 */
-	{ 0x410d, "BCM4334B0"	},	/* 002.001.013 */
-	{ 0x410e, "BCM43341B0"	},	/* 002.001.014 */
-	{ 0x4204, "BCM2076B1"	},	/* 002.002.004 */
-	{ 0x4406, "BCM4324B3"	},	/* 002.004.006 */
-	{ 0x4606, "BCM4324B5"	},	/* 002.006.006 */
-	{ 0x6109, "BCM4335C0"	},	/* 003.001.009 */
-	{ 0x610c, "BCM4354"	},	/* 003.001.012 */
-	{ 0x2122, "BCM4343A0"	},	/* 001.001.034 */
-	{ 0x2209, "BCM43430A1"  },	/* 001.002.009 */
-	{ 0x6119, "BCM4345C0"	},	/* 003.001.025 */
-	{ 0x6606, "BCM4345C5"	},	/* 003.006.006 */
-	{ 0x230f, "BCM4356A2"	},	/* 001.003.015 */
-	{ 0x2310, "BCM4343A2"	},	/* 001.003.016 */
-	{ 0x220e, "BCM20702A1"  },	/* 001.002.014 */
-	{ 0x420d, "BCM4349B1"	},	/* 002.002.013 */
-	{ 0x420e, "BCM4349B1"	},	/* 002.002.014 */
-	{ 0x4217, "BCM4329B1"   },	/* 002.002.023 */
-	{ 0x6106, "BCM4359C0"	},	/* 003.001.006 */
-	{ 0x4106, "BCM4335A0"	},	/* 002.001.006 */
-	{ 0x410c, "BCM43430B0"	},	/* 002.001.012 */
-	{ 0x2119, "BCM4373A0"	},	/* 001.001.025 */
-	{ }
+	{ 0x1111, "BCM4362A2" }, /* 000.017.017 */
+	{ 0x4103, "BCM4330B1" }, /* 002.001.003 */
+	{ 0x410d, "BCM4334B0" }, /* 002.001.013 */
+	{ 0x410e, "BCM43341B0" }, /* 002.001.014 */
+	{ 0x4204, "BCM2076B1" }, /* 002.002.004 */
+	{ 0x4406, "BCM4324B3" }, /* 002.004.006 */
+	{ 0x4606, "BCM4324B5" }, /* 002.006.006 */
+	{ 0x6109, "BCM4335C0" }, /* 003.001.009 */
+	{ 0x610c, "BCM4354" }, /* 003.001.012 */
+	{ 0x2122, "BCM4343A0" }, /* 001.001.034 */
+	{ 0x2209, "BCM43430A1" }, /* 001.002.009 */
+	{ 0x6119, "BCM4345C0" }, /* 003.001.025 */
+	{ 0x6606, "BCM4345C5" }, /* 003.006.006 */
+	{ 0x230f, "BCM4356A2" }, /* 001.003.015 */
+	{ 0x2310, "BCM4343A2" }, /* 001.003.016 */
+	{ 0x220e, "BCM20702A1" }, /* 001.002.014 */
+	{ 0x420d, "BCM4349B1" }, /* 002.002.013 */
+	{ 0x420e, "BCM4349B1" }, /* 002.002.014 */
+	{ 0x4217, "BCM4329B1" }, /* 002.002.023 */
+	{ 0x6106, "BCM4359C0" }, /* 003.001.006 */
+	{ 0x4106, "BCM4335A0" }, /* 002.001.006 */
+	{ 0x410c, "BCM43430B0" }, /* 002.001.012 */
+	{ 0x2119, "BCM4373A0" }, /* 001.001.025 */
+	{}
 };
 
 static const struct bcm_subver_table bcm_usb_subver_table[] = {
-	{ 0x2105, "BCM20703A1"	},	/* 001.001.005 */
-	{ 0x210b, "BCM43142A0"	},	/* 001.001.011 */
-	{ 0x2112, "BCM4314A0"	},	/* 001.001.018 */
-	{ 0x2118, "BCM20702A0"	},	/* 001.001.024 */
-	{ 0x2126, "BCM4335A0"	},	/* 001.001.038 */
-	{ 0x220e, "BCM20702A1"	},	/* 001.002.014 */
-	{ 0x230f, "BCM4356A2"	},	/* 001.003.015 */
-	{ 0x4106, "BCM4335B0"	},	/* 002.001.006 */
-	{ 0x410e, "BCM20702B0"	},	/* 002.001.014 */
-	{ 0x6109, "BCM4335C0"	},	/* 003.001.009 */
-	{ 0x610c, "BCM4354"	},	/* 003.001.012 */
-	{ 0x6607, "BCM4350C5"	},	/* 003.006.007 */
-	{ }
+	{ 0x2105, "BCM20703A1" }, /* 001.001.005 */
+	{ 0x210b, "BCM43142A0" }, /* 001.001.011 */
+	{ 0x2112, "BCM4314A0" }, /* 001.001.018 */
+	{ 0x2118, "BCM20702A0" }, /* 001.001.024 */
+	{ 0x2126, "BCM4335A0" }, /* 001.001.038 */
+	{ 0x220e, "BCM20702A1" }, /* 001.002.014 */
+	{ 0x230f, "BCM4356A2" }, /* 001.003.015 */
+	{ 0x4106, "BCM4335B0" }, /* 002.001.006 */
+	{ 0x410e, "BCM20702B0" }, /* 002.001.014 */
+	{ 0x6109, "BCM4335C0" }, /* 003.001.009 */
+	{ 0x610c, "BCM4354" }, /* 003.001.012 */
+	{ 0x6607, "BCM4350C5" }, /* 003.006.007 */
+	{}
 };
 
 /*
@@ -540,7 +547,8 @@ static const struct bcm_subver_table bcm_usb_subver_table[] = {
 static const char *btbcm_get_board_name(struct device *dev)
 {
 #ifdef CONFIG_OF
-	struct device_node *root __free(device_node) = of_find_node_by_path("/");
+	struct device_node *root __free(device_node) =
+		of_find_node_by_path("/");
 	char *board_type;
 	const char *tmp;
 
@@ -563,7 +571,8 @@ static const char *btbcm_get_board_name(struct device *dev)
 #endif
 }
 
-int btbcm_initialize(struct hci_dev *hdev, bool *fw_load_done, bool use_autobaud_mode)
+int btbcm_initialize(struct hci_dev *hdev, bool *fw_load_done,
+		     bool use_autobaud_mode)
 {
 	u16 subver, rev, pid, vid;
 	struct sk_buff *skb;
@@ -641,16 +650,16 @@ int btbcm_initialize(struct hci_dev *hdev, bool *fw_load_done, bool use_autobaud
 		snprintf(postfix, sizeof(postfix), "-%4.4x-%4.4x", vid, pid);
 	}
 
-	fw_name = kmalloc_array(BCM_FW_NAME_COUNT_MAX,
-		sizeof(*fw_name),
-		GFP_KERNEL);
+	fw_name = kmalloc_array(BCM_FW_NAME_COUNT_MAX, sizeof(*fw_name),
+				GFP_KERNEL);
 	if (!fw_name)
 		return -ENOMEM;
 
 	if (hw_name) {
 		if (board_name) {
 			snprintf(fw_name[fw_name_count], BCM_FW_NAME_LEN,
-				 "brcm/%s%s.%s.hcd", hw_name, postfix, board_name);
+				 "brcm/%s%s.%s.hcd", hw_name, postfix,
+				 board_name);
 			fw_name_count++;
 		}
 		snprintf(fw_name[fw_name_count], BCM_FW_NAME_LEN,
@@ -663,8 +672,8 @@ int btbcm_initialize(struct hci_dev *hdev, bool *fw_load_done, bool use_autobaud
 			 "brcm/BCM%s.%s.hcd", postfix, board_name);
 		fw_name_count++;
 	}
-	snprintf(fw_name[fw_name_count], BCM_FW_NAME_LEN,
-		 "brcm/BCM%s.hcd", postfix);
+	snprintf(fw_name[fw_name_count], BCM_FW_NAME_LEN, "brcm/BCM%s.hcd",
+		 postfix);
 	fw_name_count++;
 
 	for (i = 0; i < fw_name_count; i++) {
@@ -694,7 +703,8 @@ int btbcm_initialize(struct hci_dev *hdev, bool *fw_load_done, bool use_autobaud
 }
 EXPORT_SYMBOL_GPL(btbcm_initialize);
 
-int btbcm_finalize(struct hci_dev *hdev, bool *fw_load_done, bool use_autobaud_mode)
+int btbcm_finalize(struct hci_dev *hdev, bool *fw_load_done,
+		   bool use_autobaud_mode)
 {
 	int err;
 
@@ -742,8 +752,8 @@ int btbcm_setup_apple(struct hci_dev *hdev)
 	/* Read Verbose Config Version Info */
 	skb = btbcm_read_verbose_config(hdev);
 	if (!IS_ERR(skb)) {
-		bt_dev_info(hdev, "BCM: chip id %u build %4.4u",
-			    skb->data[1], get_unaligned_le16(skb->data + 5));
+		bt_dev_info(hdev, "BCM: chip id %u build %4.4u", skb->data[1],
+			    get_unaligned_le16(skb->data + 5));
 		kfree_skb(skb);
 	}
 

@@ -19,61 +19,59 @@
 
 #include "hci_uart.h"
 
-#define AML_EVT_HEAD_SIZE		4
-#define AML_BDADDR_DEFAULT (&(bdaddr_t) {{ 0x00, 0xff, 0x00, 0x22, 0x2d, 0xae }})
+#define AML_EVT_HEAD_SIZE 4
+#define AML_BDADDR_DEFAULT \
+	(&(bdaddr_t){ { 0x00, 0xff, 0x00, 0x22, 0x2d, 0xae } })
 
-#define AML_FIRMWARE_OPERATION_SIZE		(248)
-#define AML_FIRMWARE_MAX_SIZE			(512 * 1024)
+#define AML_FIRMWARE_OPERATION_SIZE (248)
+#define AML_FIRMWARE_MAX_SIZE (512 * 1024)
 
 /* TCI command */
-#define AML_TCI_CMD_READ			0xFEF0
-#define AML_TCI_CMD_WRITE			0xFEF1
-#define AML_TCI_CMD_UPDATE_BAUDRATE		0xFEF2
-#define AML_TCI_CMD_HARDWARE_RESET		0xFEF2
-#define AML_TCI_CMD_DOWNLOAD_BT_FW		0xFEF3
+#define AML_TCI_CMD_READ 0xFEF0
+#define AML_TCI_CMD_WRITE 0xFEF1
+#define AML_TCI_CMD_UPDATE_BAUDRATE 0xFEF2
+#define AML_TCI_CMD_HARDWARE_RESET 0xFEF2
+#define AML_TCI_CMD_DOWNLOAD_BT_FW 0xFEF3
 
 /* Vendor command */
-#define AML_BT_HCI_VENDOR_CMD			0xFC1A
+#define AML_BT_HCI_VENDOR_CMD 0xFC1A
 
 /* TCI operation parameter in controller chip */
-#define AML_OP_UART_MODE			0x00A30128
-#define AML_OP_EVT_ENABLE			0x00A70014
-#define AML_OP_MEM_HARD_TRANS_EN		0x00A7000C
-#define AML_OP_RF_CFG				0x00F03040
-#define AML_OP_RAM_POWER_CTR			0x00F03050
-#define AML_OP_HARDWARE_RST			0x00F03058
-#define AML_OP_ICCM_RAM_BASE			0x00000000
-#define AML_OP_DCCM_RAM_BASE			0x00D00000
+#define AML_OP_UART_MODE 0x00A30128
+#define AML_OP_EVT_ENABLE 0x00A70014
+#define AML_OP_MEM_HARD_TRANS_EN 0x00A7000C
+#define AML_OP_RF_CFG 0x00F03040
+#define AML_OP_RAM_POWER_CTR 0x00F03050
+#define AML_OP_HARDWARE_RST 0x00F03058
+#define AML_OP_ICCM_RAM_BASE 0x00000000
+#define AML_OP_DCCM_RAM_BASE 0x00D00000
 
 /* UART configuration */
-#define AML_UART_XMIT_EN			BIT(12)
-#define AML_UART_RECV_EN			BIT(13)
-#define AML_UART_TIMEOUT_INT_EN			BIT(14)
-#define AML_UART_CLK_SOURCE			40000000
+#define AML_UART_XMIT_EN BIT(12)
+#define AML_UART_RECV_EN BIT(13)
+#define AML_UART_TIMEOUT_INT_EN BIT(14)
+#define AML_UART_CLK_SOURCE 40000000
 
 /* Controller event */
-#define AML_EVT_EN				BIT(24)
+#define AML_EVT_EN BIT(24)
 
 /* RAM power control */
-#define AML_RAM_POWER_ON			(0)
-#define AML_RAM_POWER_OFF			(1)
+#define AML_RAM_POWER_ON (0)
+#define AML_RAM_POWER_OFF (1)
 
 /* RF configuration */
-#define AML_RF_ANT_SINGLE			BIT(28)
-#define AML_RF_ANT_DOUBLE			BIT(29)
+#define AML_RF_ANT_SINGLE BIT(28)
+#define AML_RF_ANT_DOUBLE BIT(29)
 
 /* Memory transaction */
-#define AML_MM_CTR_HARD_TRAS_EN			BIT(27)
+#define AML_MM_CTR_HARD_TRAS_EN BIT(27)
 
 /* Controller reset */
-#define AML_CTR_CPU_RESET			BIT(8)
-#define AML_CTR_MAC_RESET			BIT(9)
-#define AML_CTR_PHY_RESET			BIT(10)
+#define AML_CTR_CPU_RESET BIT(8)
+#define AML_CTR_MAC_RESET BIT(9)
+#define AML_CTR_PHY_RESET BIT(10)
 
-enum {
-	FW_ICCM,
-	FW_DCCM
-};
+enum { FW_ICCM, FW_DCCM };
 
 struct aml_fw_len {
 	u32 iccm_len;
@@ -152,8 +150,9 @@ static int aml_send_tci_cmd(struct hci_dev *hdev, u16 op_code, u32 op_addr,
 		goto skb_free;
 
 	if (rsp->opcode != op_code || rsp->status != 0x00) {
-		bt_dev_err(hdev, "send TCI cmd (0x%04X), response (0x%04X):(%d)",
-		       op_code, rsp->opcode, rsp->status);
+		bt_dev_err(hdev,
+			   "send TCI cmd (0x%04X), response (0x%04X):(%d)",
+			   op_code, rsp->opcode, rsp->status);
 		err = -EINVAL;
 		goto skb_free;
 	}
@@ -174,7 +173,7 @@ static int aml_update_chip_baudrate(struct hci_dev *hdev, u32 baud)
 	value |= AML_UART_XMIT_EN | AML_UART_RECV_EN | AML_UART_TIMEOUT_INT_EN;
 
 	return aml_send_tci_cmd(hdev, AML_TCI_CMD_UPDATE_BAUDRATE,
-				  AML_OP_UART_MODE, &value, sizeof(value));
+				AML_OP_UART_MODE, &value, sizeof(value));
 }
 
 static int aml_start_chip(struct hci_dev *hdev)
@@ -184,55 +183,54 @@ static int aml_start_chip(struct hci_dev *hdev)
 
 	value = AML_MM_CTR_HARD_TRAS_EN;
 	ret = aml_send_tci_cmd(hdev, AML_TCI_CMD_WRITE,
-			       AML_OP_MEM_HARD_TRANS_EN,
-			       &value, sizeof(value));
+			       AML_OP_MEM_HARD_TRANS_EN, &value, sizeof(value));
 	if (ret)
 		return ret;
 
 	/* controller hardware reset */
 	value = AML_CTR_CPU_RESET | AML_CTR_MAC_RESET | AML_CTR_PHY_RESET;
 	ret = aml_send_tci_cmd(hdev, AML_TCI_CMD_HARDWARE_RESET,
-			       AML_OP_HARDWARE_RST,
-			       &value, sizeof(value));
+			       AML_OP_HARDWARE_RST, &value, sizeof(value));
 	return ret;
 }
 
-static int aml_send_firmware_segment(struct hci_dev *hdev,
-				     u8 fw_type,
-				     u8 *seg,
-				     u32 seg_size,
-				     u32 offset)
+static int aml_send_firmware_segment(struct hci_dev *hdev, u8 fw_type, u8 *seg,
+				     u32 seg_size, u32 offset)
 {
 	u32 op_addr = 0;
 
 	if (fw_type == FW_ICCM)
-		op_addr = AML_OP_ICCM_RAM_BASE  + offset;
+		op_addr = AML_OP_ICCM_RAM_BASE + offset;
 	else if (fw_type == FW_DCCM)
 		op_addr = AML_OP_DCCM_RAM_BASE + offset;
 
-	return aml_send_tci_cmd(hdev, AML_TCI_CMD_DOWNLOAD_BT_FW,
-			     op_addr, (u32 *)seg, seg_size);
+	return aml_send_tci_cmd(hdev, AML_TCI_CMD_DOWNLOAD_BT_FW, op_addr,
+				(u32 *)seg, seg_size);
 }
 
-static int aml_send_firmware(struct hci_dev *hdev, u8 fw_type,
-			     u8 *fw, u32 fw_size, u32 offset)
+static int aml_send_firmware(struct hci_dev *hdev, u8 fw_type, u8 *fw,
+			     u32 fw_size, u32 offset)
 {
 	u32 seg_size = 0;
 	u32 seg_off = 0;
 
 	if (fw_size > AML_FIRMWARE_MAX_SIZE) {
-		bt_dev_err(hdev,
+		bt_dev_err(
+			hdev,
 			"Firmware size %d kB is larger than the maximum of 512 kB. Aborting.",
 			fw_size);
 		return -EINVAL;
 	}
 	while (fw_size > 0) {
 		seg_size = (fw_size > AML_FIRMWARE_OPERATION_SIZE) ?
-			   AML_FIRMWARE_OPERATION_SIZE : fw_size;
+				   AML_FIRMWARE_OPERATION_SIZE :
+				   fw_size;
 		if (aml_send_firmware_segment(hdev, fw_type, (fw + seg_off),
 					      seg_size, offset)) {
-			bt_dev_err(hdev, "Failed send firmware, type: %d, offset: 0x%x",
-			       fw_type, offset);
+			bt_dev_err(
+				hdev,
+				"Failed send firmware, type: %d, offset: 0x%x",
+				fw_type, offset);
 			return -EINVAL;
 		}
 		seg_off += seg_size;
@@ -255,23 +253,21 @@ static int aml_download_firmware(struct hci_dev *hdev, const char *fw_name)
 
 	/* Enable firmware download event */
 	value = AML_EVT_EN;
-	ret = aml_send_tci_cmd(hdev, AML_TCI_CMD_WRITE,
-			       AML_OP_EVT_ENABLE,
+	ret = aml_send_tci_cmd(hdev, AML_TCI_CMD_WRITE, AML_OP_EVT_ENABLE,
 			       &value, sizeof(value));
 	if (ret)
 		goto exit;
 
 	/* RAM power on */
 	value = AML_RAM_POWER_ON;
-	ret = aml_send_tci_cmd(hdev, AML_TCI_CMD_WRITE,
-			       AML_OP_RAM_POWER_CTR,
+	ret = aml_send_tci_cmd(hdev, AML_TCI_CMD_WRITE, AML_OP_RAM_POWER_CTR,
 			       &value, sizeof(value));
 	if (ret)
 		goto exit;
 
 	/* Check RAM power status */
-	ret = aml_send_tci_cmd(hdev, AML_TCI_CMD_READ,
-			       AML_OP_RAM_POWER_CTR, NULL, 0);
+	ret = aml_send_tci_cmd(hdev, AML_TCI_CMD_READ, AML_OP_RAM_POWER_CTR,
+			       NULL, 0);
 	if (ret)
 		goto exit;
 
@@ -290,16 +286,16 @@ static int aml_download_firmware(struct hci_dev *hdev, const char *fw_name)
 	fw_len = (const struct aml_fw_len *)firmware->data;
 	if (fw_len->iccm_len < amldev->aml_dev_data->iccm_offset ||
 	    fw_len->iccm_len > firmware->size - sizeof(*fw_len) ||
-	    fw_len->dccm_len > firmware->size - sizeof(*fw_len) -
-			fw_len->iccm_len) {
+	    fw_len->dccm_len >
+		    firmware->size - sizeof(*fw_len) - fw_len->iccm_len) {
 		bt_dev_err(hdev, "Invalid firmware segment lengths");
 		ret = -EINVAL;
 		goto exit;
 	}
 
 	/* Download ICCM */
-	iccm_start = (u8 *)(firmware->data) + sizeof(struct aml_fw_len)
-			+ amldev->aml_dev_data->iccm_offset;
+	iccm_start = (u8 *)(firmware->data) + sizeof(struct aml_fw_len) +
+		     amldev->aml_dev_data->iccm_offset;
 	iccm_len = fw_len->iccm_len - amldev->aml_dev_data->iccm_offset;
 	ret = aml_send_firmware(hdev, FW_ICCM, iccm_start, iccm_len,
 				amldev->aml_dev_data->iccm_offset);
@@ -309,7 +305,8 @@ static int aml_download_firmware(struct hci_dev *hdev, const char *fw_name)
 	}
 
 	/* Download DCCM */
-	dccm_start = (u8 *)(firmware->data) + sizeof(struct aml_fw_len) + fw_len->iccm_len;
+	dccm_start = (u8 *)(firmware->data) + sizeof(struct aml_fw_len) +
+		     fw_len->iccm_len;
 	dccm_len = fw_len->dccm_len;
 	ret = aml_send_firmware(hdev, FW_DCCM, dccm_start, dccm_len,
 				amldev->aml_dev_data->dccm_offset);
@@ -320,8 +317,7 @@ static int aml_download_firmware(struct hci_dev *hdev, const char *fw_name)
 
 	/* Disable firmware download event */
 	value = 0;
-	ret = aml_send_tci_cmd(hdev, AML_TCI_CMD_WRITE,
-			       AML_OP_EVT_ENABLE,
+	ret = aml_send_tci_cmd(hdev, AML_TCI_CMD_WRITE, AML_OP_EVT_ENABLE,
 			       &value, sizeof(value));
 	if (ret)
 		goto exit;
@@ -352,12 +348,12 @@ static int aml_dump_fw_version(struct hci_dev *hdev)
 {
 	struct aml_tci_rsp *rsp = NULL;
 	struct sk_buff *skb;
-	u8 value[6] = {0};
+	u8 value[6] = { 0 };
 	u8 *fw_ver = NULL;
 	int err = 0;
 
-	skb = __hci_cmd_sync_ev(hdev, AML_BT_HCI_VENDOR_CMD, sizeof(value), value,
-				HCI_EV_CMD_COMPLETE, HCI_INIT_TIMEOUT);
+	skb = __hci_cmd_sync_ev(hdev, AML_BT_HCI_VENDOR_CMD, sizeof(value),
+				value, HCI_EV_CMD_COMPLETE, HCI_INIT_TIMEOUT);
 	if (IS_ERR(skb)) {
 		err = PTR_ERR(skb);
 		bt_dev_err(hdev, "Failed to get fw version (error: %d)", err);
@@ -370,14 +366,14 @@ static int aml_dump_fw_version(struct hci_dev *hdev)
 
 	if (rsp->opcode != AML_BT_HCI_VENDOR_CMD || rsp->status != 0x00) {
 		bt_dev_err(hdev, "dump version, error response (0x%04X):(%d)",
-		       rsp->opcode, rsp->status);
+			   rsp->opcode, rsp->status);
 		err = -EINVAL;
 		goto exit;
 	}
 
 	fw_ver = (u8 *)rsp + AML_EVT_HEAD_SIZE;
 	bt_dev_info(hdev, "fw_version: date = %02x.%02x, number = 0x%02x%02x",
-		*(fw_ver + 1), *fw_ver, *(fw_ver + 3), *(fw_ver + 2));
+		    *(fw_ver + 1), *fw_ver, *(fw_ver + 3), *(fw_ver + 2));
 
 exit:
 	kfree_skb(skb);
@@ -391,9 +387,8 @@ static int aml_set_bdaddr(struct hci_dev *hdev, const bdaddr_t *bdaddr)
 	int err = 0;
 
 	bt_dev_info(hdev, "set bdaddr (%pM)", bdaddr);
-	skb = __hci_cmd_sync_ev(hdev, AML_BT_HCI_VENDOR_CMD,
-				sizeof(bdaddr_t), bdaddr,
-				HCI_EV_CMD_COMPLETE, HCI_INIT_TIMEOUT);
+	skb = __hci_cmd_sync_ev(hdev, AML_BT_HCI_VENDOR_CMD, sizeof(bdaddr_t),
+				bdaddr, HCI_EV_CMD_COMPLETE, HCI_INIT_TIMEOUT);
 	if (IS_ERR(skb)) {
 		err = PTR_ERR(skb);
 		bt_dev_err(hdev, "Failed to set bdaddr (error: %d)", err);
@@ -405,7 +400,8 @@ static int aml_set_bdaddr(struct hci_dev *hdev, const bdaddr_t *bdaddr)
 		goto exit;
 
 	if (rsp->opcode != AML_BT_HCI_VENDOR_CMD || rsp->status != 0x00) {
-		bt_dev_err(hdev, "error response (0x%x):(%d)", rsp->opcode, rsp->status);
+		bt_dev_err(hdev, "error response (0x%x):(%d)", rsp->opcode,
+			   rsp->status);
 		err = -EINVAL;
 		goto exit;
 	}
@@ -437,7 +433,8 @@ static int aml_check_bdaddr(struct hci_dev *hdev)
 		goto exit;
 
 	if (!bacmp(&paddr->bdaddr, AML_BDADDR_DEFAULT)) {
-		bt_dev_info(hdev, "amlbt using default bdaddr (%pM)", &paddr->bdaddr);
+		bt_dev_info(hdev, "amlbt using default bdaddr (%pM)",
+			    &paddr->bdaddr);
 		hci_set_quirk(hdev, HCI_QUIRK_INVALID_BDADDR);
 	}
 
@@ -454,17 +451,15 @@ static int aml_config_rf(struct hci_dev *hdev, bool is_coex)
 	if (is_coex)
 		value = AML_RF_ANT_SINGLE;
 
-	return aml_send_tci_cmd(hdev, AML_TCI_CMD_WRITE,
-				AML_OP_RF_CFG,
-				&value, sizeof(value));
+	return aml_send_tci_cmd(hdev, AML_TCI_CMD_WRITE, AML_OP_RF_CFG, &value,
+				sizeof(value));
 }
 
 static int aml_parse_dt(struct aml_serdev *amldev)
 {
 	struct device *pdev = amldev->dev;
 
-	amldev->bt_en_gpio = devm_gpiod_get(pdev, "enable",
-					GPIOD_OUT_LOW);
+	amldev->bt_en_gpio = devm_gpiod_get(pdev, "enable", GPIOD_OUT_LOW);
 	if (IS_ERR(amldev->bt_en_gpio)) {
 		dev_err(pdev, "Failed to acquire enable gpios");
 		return PTR_ERR(amldev->bt_en_gpio);
@@ -678,17 +673,17 @@ static int aml_recv(struct hci_uart *hu, const void *data, int count)
 }
 
 static const struct hci_uart_proto aml_hci_proto = {
-	.id		= HCI_UART_AML,
-	.name		= "AML",
-	.init_speed	= 115200,
-	.oper_speed	= 4000000,
-	.open		= aml_open,
-	.close		= aml_close,
-	.setup		= aml_setup,
-	.flush		= aml_flush,
-	.recv		= aml_recv,
-	.enqueue	= aml_enqueue,
-	.dequeue	= aml_dequeue,
+	.id = HCI_UART_AML,
+	.name = "AML",
+	.init_speed = 115200,
+	.oper_speed = 4000000,
+	.open = aml_open,
+	.close = aml_close,
+	.setup = aml_setup,
+	.flush = aml_flush,
+	.recv = aml_recv,
+	.enqueue = aml_enqueue,
+	.dequeue = aml_dequeue,
 };
 
 static int aml_serdev_probe(struct serdev_device *serdev)
@@ -707,7 +702,7 @@ static int aml_serdev_probe(struct serdev_device *serdev)
 	err = hci_uart_register_device(&amldev->serdev_hu, &aml_hci_proto);
 	if (err)
 		return dev_err_probe(amldev->dev, err,
-			      "Failed to register hci uart device");
+				     "Failed to register hci uart device");
 
 	amldev->aml_dev_data = device_get_match_data(&serdev->dev);
 
