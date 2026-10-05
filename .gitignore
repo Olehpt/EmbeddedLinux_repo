@@ -1,2 +1,37 @@
 #vs garbage
 .vs/
+
+# Altium temporary / backup files
+*.PrjPcbStructure
+*.PrjPcbStructure.*
+*.SchDocPreview
+*.PcbDocPreview
+
+# Backup folders
+History/
+__Previews/
+__Previews/*
+Project Logs for */
+Project Outputs for */
+
+# Generated output
+*.OutJob
+*.REP
+*.RUL
+*.LOG
+*.log
+*.html
+*.htm
+
+# Autosave / lock / temp
+~$*
+*.tmp
+*.bak
+*.orig
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Altium generated cache/index-like files
+*.DsnWrk
