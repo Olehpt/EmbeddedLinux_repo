@@ -7,7 +7,7 @@ else
 endif
 
 
-CFLAGS = -Wall -Wextra -std=gnu11
+CFLAGS = -Wall -Wextra -std=gnu11 -static
 TARGET ?= main
 SRC = main.c
 

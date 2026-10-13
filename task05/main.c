@@ -131,6 +131,11 @@ int main(int argc, char *argv[]) {
         char c;
         ssize_t n = read(fd, &c, 1);
 
+		if (n == 1) {
+		printf("Received byte: 0x%02X\n", (unsigned char)c);
+		fflush(stdout);
+}
+
         if (n < 0) {
             if (errno == EINTR) {
                 continue;
