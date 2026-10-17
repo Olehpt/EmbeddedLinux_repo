@@ -1,0 +1,18 @@
+[Unit]
+Description=UART echo service
+After=systemd-udevd.service
+ConditionPathExists=/dev/ttyAMA0
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/uart_test /dev/ttyAMA0
+WorkingDirectory=/home/host
+User=host
+SupplementaryGroups=dialout
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGTERM
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target
